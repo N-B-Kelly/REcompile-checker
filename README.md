@@ -13,8 +13,11 @@ If you just want to test simple cases to get an idea of what things your regex i
 
 More detailed documentation can be found in the test_readme.txt file, or by running the command with the argument '-h'.
 
+If something should have been rejected, but was accepted, and the five argument version of tester.sh was used, it will try to minimize the expression, finding a smaller and less complex regex that also fails in the same way.
+
 *WARNING:*
 
 I make no assurances that this will 100% line up with the course specification: I'm pretty sure it does, but it's entirely possible that there's a bug somewhere, or that I missed something.
 
-If you spot any mistakes, or can think of any error cases that aren't covered (REgen.java, look for `public static LinkedList<String> bad_regex...` - currently line 86), then just send me an email, make a pull request,  or open an issue.
+If you spot any mistakes, or can think of any error cases that aren't covered (REgen.java, look for `public static LinkedList<String> bad_regex...` - currently line 83), then just send me an email, make a pull request,  or open an issue.
+
