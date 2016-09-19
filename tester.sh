@@ -19,6 +19,7 @@ INVALID_STK="-i"
 
 if [ $1 = "-h" ] ; then 
     cat test_readme.txt
+    exit 0
 fi
 
 #if REgen isn't found, we can try to compile it

@@ -10,4 +10,4 @@ An example of usage would be: ./tester.sh -v -y 3 3 25
 Another example usage would be: ./tester.sh -v -y 5 5 25 15 25 2 2
 
 
-More detailed documentation can be found in the test_readme.txt file.
+More detailed documentation can be found in the test_readme.txt file, or by running the command with the argument '-h'.
