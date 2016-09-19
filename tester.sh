@@ -21,6 +21,29 @@ if [ $1 = "-h" ] ; then
     cat test_readme.txt
 fi
 
+#if REgen isn't found, we can try to compile it
+if ! [ -f "REgen.class" ] ; then
+    echo "REgen.class not found: trying to compile instead..."
+    if ! ( [ -f "REgen.java" ] && javac REgen.java > /dev/null 2>&1 ) ; then
+	echo "error: REgen.class does not seem to exist, and REgen.java either doesn't exist or is uncompilable"
+	exit 1
+    fi
+    echo "Succesfully compiled REgen.java"
+fi
+
+#if REcompile isn't found, we can try to compile it	
+if ! [ -f "REcompile.class" ] ; then
+    echo "REcompile.class not found: trying to compile instead..."
+    if ! ( [ -f "REcompile.java" ] && javac REcompile.java > /dev/null 2>&1 ) ; then
+	echo "error: REcompile.class was not found, and REcompile.java appears to be absent or uncompilable"
+	exit 1
+    fi
+    echo "Succesfully compiled REcompile.java"
+fi
+
+
+#CHECK ARGUMENTS -------------------------------------------------------------------------------------------
+
 if [[ ! $1 = "-h" ]] && [[ ! $1 = "-v" ]] && [[ ! $1 = "-s" ]] ; then
     echo "$USAGE"
     echo "$HELP"
@@ -54,9 +77,9 @@ if ! [[ $5 =~ $RE ]] ; then
     exit 1
 fi
 
+#FIRST SET OF ARGUMENTS CHECKED-----------------------------------------------------------------------------
 
-
-#CASE: THREE ARGUMENTS
+#CASE: five args -> 3 checker args
 if [ $# -eq 5 ] ; then
     COUNTER=0
     until [ $COUNTER -eq $COUNT ]; do
@@ -119,7 +142,8 @@ if [ $# -eq 5 ] ; then
 fi
 
 
-#CASE: EIGHT ARGUMENTS
+#CASE: EIGHT ARGUMENTS - MORE ARG CHECKING-------------------------------------------------------------------
+
 if ! [[ $6 =~ $RE ]] ; then
     echo "argument given for [special char ratio] was missing or not positive a number" >&2;
     echo "$USAGE"
@@ -152,6 +176,7 @@ if ! [[ $9 =~ $RE ]] ; then
     exit 1
 fi
 
+#END ARG CHECKING 2 -----------------------------------------------------------------------------------------
 
 COUNTER=0
 until [ $COUNTER -eq $COUNT ]; do
