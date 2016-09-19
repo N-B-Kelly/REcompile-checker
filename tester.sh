@@ -100,6 +100,7 @@ if [ $# -eq 5 ] ; then
 	#CHECK IF IT WORKED
 	if ! java REcompile "$REGEX" > /dev/null 2>&1 ; then
 	    #IF IT FAILED, OUTPUT THE OFFENDING REGEX
+	    echo ""
 	    echo "test number $COUNTER failed."
 	    echo "regular expression should have been accepted: $REGEX"
 	    exit 1
@@ -107,19 +108,25 @@ if [ $# -eq 5 ] ; then
     done
     
     if [ $1 = "-v" ] ; then
+	echo ""
 	echo "all valid expressions were accepted"
+	echo ""
     fi
 
     #now we check to see that all rejections occur as they should
     COUNTER2=0
+    RETVAL=0
     until [ $COUNTER2 -eq $COUNT ]; do
 	let COUNTER2+=1
 	#GENERATE REGEX
 	if [[ $2 = "+s" ]] || [[ $2 = "-y" ]] ; then
-	    REGEX="$(java REgen $INVALID_STK $LENGTH $COMPLEXITY 15 25 2 2)"
+	    REGEX=$( java REgen -ec "$INVALID_STK" "$LENGTH" "$COMPLEXITY" 15 25 2 2 )
+	    RETVAL=$?
 	else
-	    REGEX="$(java REgen $INVALID_ARG $LENGTH $COMPLEXITY 15 25 2 2)"
+	    REGEX=$( java REgen -ec "$INVALID_ARG" "$LENGTH" "$COMPLEXITY" 15 25 2 2 )
+	    RETVAL=$?
 	fi
+
 	#if verbose, echo regular expression
 	if [ $1 = "-v" ] ; then
 	    echo "$REGEX"
@@ -128,8 +135,46 @@ if [ $# -eq 5 ] ; then
 	#CHECK IF IT WORKED
 	if java REcompile "$REGEX" > /dev/null 2>&1 ; then
 	    #IF IT FAILED, OUTPUT THE OFFENDING REGEX
-	    echo "test number $COUNTER2 failed."
-	    echo "regular expression should have been denied: $REGEX"
+	    echo ""
+	    echo "test number $COUNTER2 failed on the expression:"
+	    echo "$REGEX"
+	    #IF ARG SET -> DO LATER
+	    #see if we can reduce the output a bit
+	    EXFL=0
+	    #echo "Attempting to minimize error case"
+	    while [ $EXFL -eq 0 ]; do
+		if [ $COMPLEXITY -gt 3 ] ; then
+		    let COMPLEXITY-=2
+		elif [ $COMPLEXITY -gt 1 ] ; then
+		    let COMPLEXITY-=1
+		elif [ $LENGTH -gt 3 ] ; then
+		    let LENGTH-=2
+		elif [ $LENGTH -gt 1 ] ; then
+		    let LENGTH-=1
+		else 
+		    echo ""
+	 	    echo "Minimal failing regex found: "
+		    echo "$REGEX"
+		    exit 1
+		fi
+		
+		if [[ $2 = "+s" ]] || [[ $2 = "-y" ]] ; then
+		    REGEX2=$( java REgen $INVALID_STK $LENGTH $COMPLEXITY 15 25 2 2 -ec -fe $RETVAL )
+		else
+		    REGEX2=$( java REgen $INVALID_ARG $LENGTH $COMPLEXITY 15 25 2 2 -ec -fe $RETVAL )
+		fi
+		#echo $REGEX2
+		if ! java REcompile "$REGEX2" > /dev/null 2>&1 ;  then
+		    echo ""
+		    echo "minimal failing regex found"
+		    echo "$REGEX"
+		    exit 1
+		fi
+		
+		REGEX=$REGEX2
+		echo "$REGEX"
+	    done
+	    #fi
 	    exit 1
 	fi
     done
