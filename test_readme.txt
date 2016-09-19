@@ -2,7 +2,7 @@ what this script does:
     This will basically generate a set of regular expressions according to some rules,
     and then verify that your implementation of REcompile accepts them (it should)
     Then it will generate a set of "bad" regular expressions, according to the same rules,
-    and then verify that your implementation if REcompile denies them (it also should)
+    and then verify that your implementation of REcompile denies them (it also should)
 
 how to use this script:
     Initial requirements:
